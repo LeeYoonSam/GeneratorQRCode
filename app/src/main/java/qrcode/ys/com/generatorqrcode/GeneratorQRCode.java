@@ -1,76 +1,69 @@
 package qrcode.ys.com.generatorqrcode;
 
 import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 
-public class GeneratorQRCode extends Activity implements View.OnClickListener {
+import org.json.JSONObject;
 
-    private String LOG_TAG = "GenerateQRCode";
+
+public class GeneratorQRCode extends Activity {
+
+    JSONObject json = new JSONObject();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_generatorqr);
 
-        Button button1 = (Button) findViewById(R.id.button1);
-        button1.setOnClickListener(this);
+        try {
 
+            json.put("deviceName", BluetoothAdapter.getDefaultAdapter().getName());
+            json.put("deviceAddress", BluetoothAdapter.getDefaultAdapter().getAddress());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        generatorQRCode();
     }
 
-    public void onClick(View v) {
+    public void generatorQRCode() {
+        //Find screen size
+        WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        Display display = manager.getDefaultDisplay();
+        Point point = new Point();
+        display.getSize(point);
+        int width = point.x;
+        int height = point.y;
+        int smallerDimension = width < height ? width : height;
 
-        switch (v.getId()) {
-            case R.id.button1:
-                EditText qrInput = (EditText) findViewById(R.id.qrInput);
-                String qrInputText = qrInput.getText().toString();
-                Log.v(LOG_TAG, qrInputText);
-
-                //Find screen size
-                WindowManager manager = (WindowManager) getSystemService(WINDOW_SERVICE);
-                Display display = manager.getDefaultDisplay();
-                Point point = new Point();
-                display.getSize(point);
-                int width = point.x;
-                int height = point.y;
-                int smallerDimension = width < height ? width : height;
-
-                // 화면을 3/4 비율로 사이즈 계산
-                smallerDimension = smallerDimension * 3/4;
+        // 화면을 3/4 비율로 사이즈 계산
+        smallerDimension = smallerDimension * 3/4;
 
 
-//                QRCodeEncoder(String data, Bundle bundle, String type, String format, int dimension)
-                //Encode with a QR Code image
-                QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(qrInputText,
-                        null,
-                        Contents.Type.TEXT,
-                        BarcodeFormat.QR_CODE.toString(),
-                        smallerDimension);
-                try {
-                    Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
-                    ImageView myImage = (ImageView) findViewById(R.id.imageView1);
-                    myImage.setImageBitmap(bitmap);
+        //Encode with a QR Code image
+        QRCodeEncoder qrCodeEncoder = new QRCodeEncoder(json.toString(),
+                null,
+                Contents.Type.TEXT,
+                BarcodeFormat.QR_CODE.toString(),
+                smallerDimension);
+        try {
+            // 이미지뷰에 인코딩된 QR 이미지를 세팅
+            Bitmap bitmap = qrCodeEncoder.encodeAsBitmap();
+            ImageView ivQRCode = (ImageView) findViewById(R.id.ivQRCode);
+            ivQRCode.setImageBitmap(bitmap);
 
-                } catch (WriterException e) {
-                    e.printStackTrace();
-                }
-
-
-                break;
-
-            // More buttons go here (if any) ...
-
+        } catch (WriterException e) {
+            e.printStackTrace();
         }
     }
 }

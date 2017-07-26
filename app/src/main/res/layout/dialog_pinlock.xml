@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mine_shaft"
+    android:layout_margin="16sp">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:layout_centerHorizontal="true"
+        android:textSize="28sp"
+        android:textColor="#fff"
+        android:text="비밀번호 입력"/>
+
+    <com.andrognito.pinlockview.IndicatorDots
+        android:id="@+id/indicator_dots"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/tvTitle"
+        android:layout_marginTop="36dp" />
+
+    <com.andrognito.pinlockview.PinLockView
+        android:id="@+id/pin_lock_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/indicator_dots"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="26dp"
+        app:keypadButtonSize="72dp"
+        app:keypadShowDeleteButton="true"
+        app:keypadTextColor="#fff"
+        app:keypadTextSize="18dp" />
+
+    <Button
+        android:id="@+id/btAction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pin_lock_view"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:background="@android:color/transparent"/>
+
+</RelativeLayout>
